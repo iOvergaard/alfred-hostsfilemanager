@@ -3,10 +3,12 @@
 ## Description
 Alfred 2/3 workflow to manage the hosts file on OSX
 
-## Usage
+## Installation
 
 1. Download the .alfredworkflow file and import it to Alfred (requires Powerpack)
 1. Use keyword "hosts" in Alfred or define your own
+
+## Usage
 
 + Click on an entry copies it to the clipboard
 + CMD + Click on an entry to delete it
