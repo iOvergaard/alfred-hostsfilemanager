@@ -1,0 +1,366 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>bundleid</key>
+	<string>com.iovergaard.alfred.hfm</string>
+	<key>category</key>
+	<string>Tools</string>
+	<key>connections</key>
+	<dict>
+		<key>1CD97C3A-C7CC-4915-AD56-E2F62272BBA0</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>A70A4E1E-712E-4575-967A-0AA64960904D</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>84E00FF8-0609-4E6F-8CB7-D23067E11F49</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>2A093DD6-850A-4585-BEDA-330E6DD257DA</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>73A17616-E420-4EC4-BDA2-0D1AEC60B8BD</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>45208A99-B134-4052-9E24-59CE453455B7</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>1CD97C3A-C7CC-4915-AD56-E2F62272BBA0</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>2A093DD6-850A-4585-BEDA-330E6DD257DA</string>
+				<key>modifiers</key>
+				<integer>1048576</integer>
+				<key>modifiersubtext</key>
+				<string>Remove entry</string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+	</dict>
+	<key>createdby</key>
+	<string>Jacob Overgaard</string>
+	<key>description</key>
+	<string>Use this workflow to manage your hosts file</string>
+	<key>disabled</key>
+	<false/>
+	<key>name</key>
+	<string>Hosts File Manager v1.0</string>
+	<key>objects</key>
+	<array>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>lastpathcomponent</key>
+				<false/>
+				<key>onlyshowifquerypopulated</key>
+				<true/>
+				<key>removeextension</key>
+				<false/>
+				<key>text</key>
+				<string>{query}</string>
+				<key>title</key>
+				<string>Hosts: Entry added</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.notification</string>
+			<key>uid</key>
+			<string>A70A4E1E-712E-4575-967A-0AA64960904D</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>applescript</key>
+				<string>on alfred_script(q)
+  set hostsFile to "/private/etc/hosts"
+
+  try
+    if q is equal to "" then
+      return "Error: No input received"
+    end if
+
+    set cmdArray to my split(q, " ")
+    set entryCommand to first item of cmdArray
+
+    if entryCommand is equal to "add" then
+
+      if count of cmdArray is greater than or equal to 3 then
+        set entryIp to second item of cmdArray
+        set entryHost to third item of cmdArray
+        set shellCmd to "echo " &amp; entryIp &amp; " " &amp; entryHost &amp; " &gt;&gt; " &amp; hostsFile
+        do shell script shellCmd with administrator privileges
+        return entryHost
+      else
+        return "Error: You need to specify both IP address and host name"
+      end if
+    end if
+
+  on error errMsg number errNo
+    return "Error: " &amp; errMsg
+  end try
+
+end alfred_script
+
+to split(someText, delimiter)
+  set AppleScript's text item delimiters to delimiter
+  set someText to someText's text items
+  set AppleScript's text item delimiters to {""}
+  return someText
+end split</string>
+				<key>cachescript</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.applescript</string>
+			<key>uid</key>
+			<string>1CD97C3A-C7CC-4915-AD56-E2F62272BBA0</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>alfredfiltersresults</key>
+				<false/>
+				<key>argumenttype</key>
+				<integer>1</integer>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>keyword</key>
+				<string>hosts</string>
+				<key>queuedelaycustom</key>
+				<integer>3</integer>
+				<key>queuedelayimmediatelyinitially</key>
+				<true/>
+				<key>queuedelaymode</key>
+				<integer>0</integer>
+				<key>queuemode</key>
+				<integer>1</integer>
+				<key>runningsubtext</key>
+				<string>Loading hosts entries...</string>
+				<key>script</key>
+				<string>HOSTS=/private/etc/hosts
+HOSTS_PATTERN="^#"
+QUERY="{query}"
+
+echo '&lt;?xml version="1.0"?&gt;&lt;items&gt;'
+echo ''
+
+if [[ $QUERY == "" ]]; then
+	echo "&lt;item valid=\"no\" autocomplete=\"127.0.0.1 localhost\"&gt;"
+	echo "&lt;title&gt;Add entry&lt;/title&gt;"
+	echo "&lt;subtitle&gt;To add an entry select this option or start typing&lt;/subtitle&gt;"
+	echo "&lt;subtitle mod=\"cmd\"&gt;&lt;/subtitle&gt;"
+	echo "&lt;/item&gt;"
+	
+	counter=1
+	while read entry; do
+		if [[ ! $entry == "" ]] &amp;&amp; [[ ! $entry =~ $HOSTS_PATTERN ]]; then
+			entryIp=$(echo $entry | awk -F " " '{print $1}')
+			entryHost=$(echo $entry | awk -F " " '{print $2}')
+			echo "&lt;item arg=\"$counter\" autocomplete=\"$entryIp $entryHost\"&gt;"
+			echo "&lt;title&gt;$entryHost&lt;/title&gt;"
+			echo "&lt;subtitle&gt;$entryIp&lt;/subtitle&gt;"	
+			echo "&lt;text type=\"copy\"&gt;$entryHost&lt;/text&gt;"
+			echo "&lt;/item&gt;"
+		fi
+		(( counter += 1 ))
+	done &lt; $HOSTS
+else
+	TMP_CMD_COUNT=$(wc -w &lt;&lt;&lt; "$QUERY")
+	TMP_TITLE="Add $QUERY to hosts file"
+	TMP_SUBTITLE=""
+	TMP_VALID="yes"
+	if [[ TMP_CMD_COUNT -lt 2 ]]; then
+		TMP_SUBTITLE="You need to type both an IP address and a hostname"
+		TMP_VALID="no"
+	fi
+	echo "&lt;item arg=\"add $QUERY\" autocomplete=\"$QUERY\" valid=\"$TMP_VALID\"&gt;"
+	echo "&lt;title&gt;Add \"$QUERY\" to hosts file&lt;/title&gt;"
+	if [[ ! $TMP_SUBTITLE == "" ]]; then
+		echo "&lt;subtitle&gt;$TMP_SUBTITLE&lt;/subtitle&gt;"
+	fi
+	echo "&lt;/item&gt;"
+fi
+
+echo "&lt;/items&gt;"</string>
+				<key>scriptargtype</key>
+				<integer>0</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>subtext</key>
+				<string>View and manage your hosts file</string>
+				<key>title</key>
+				<string>Hosts File Manager</string>
+				<key>type</key>
+				<integer>0</integer>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.scriptfilter</string>
+			<key>uid</key>
+			<string>45208A99-B134-4052-9E24-59CE453455B7</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>autopaste</key>
+				<false/>
+				<key>clipboardtext</key>
+				<string>{query}</string>
+				<key>transient</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.clipboard</string>
+			<key>uid</key>
+			<string>84E00FF8-0609-4E6F-8CB7-D23067E11F49</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>lastpathcomponent</key>
+				<false/>
+				<key>onlyshowifquerypopulated</key>
+				<true/>
+				<key>removeextension</key>
+				<false/>
+				<key>text</key>
+				<string>{query}</string>
+				<key>title</key>
+				<string>Hosts: Entry removed</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.notification</string>
+			<key>uid</key>
+			<string>73A17616-E420-4EC4-BDA2-0D1AEC60B8BD</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>applescript</key>
+				<string>on alfred_script(q)
+  set hostsFile to "/private/etc/hosts"
+
+  try
+    if q is equal to "" then
+      return "Error: No input received"
+    end if
+
+    set shellCmd to "sed -i\".bak\" '" &amp; q &amp; "d' " &amp; hostsFile
+    do shell script shellCmd with administrator privileges
+    return "Removed hosts entry"
+
+  on error errMsg number errNo
+    return "Error: " &amp; errMsg
+  end try
+
+  return "Error: Did not understand command"
+end alfred_script</string>
+				<key>cachescript</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.applescript</string>
+			<key>uid</key>
+			<string>2A093DD6-850A-4585-BEDA-330E6DD257DA</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+	</array>
+	<key>readme</key>
+	<string>Manage your hosts file with simple actions to add or remove entries.
+
+To view your entries use the keyword (default: hosts) and to add an entry, simply just start typing an IP address and a hostname after the keyword.
+
+To remove an entry, simply just use the modifier (default: cmd) when clicking on an entry.
+
+Copyright Jacob Overgaard &lt;jovergaard.me&gt;</string>
+	<key>uidata</key>
+	<dict>
+		<key>1CD97C3A-C7CC-4915-AD56-E2F62272BBA0</key>
+		<dict>
+			<key>xpos</key>
+			<integer>280</integer>
+			<key>ypos</key>
+			<integer>60</integer>
+		</dict>
+		<key>2A093DD6-850A-4585-BEDA-330E6DD257DA</key>
+		<dict>
+			<key>xpos</key>
+			<integer>280</integer>
+			<key>ypos</key>
+			<integer>260</integer>
+		</dict>
+		<key>45208A99-B134-4052-9E24-59CE453455B7</key>
+		<dict>
+			<key>xpos</key>
+			<integer>80</integer>
+			<key>ypos</key>
+			<integer>120</integer>
+		</dict>
+		<key>73A17616-E420-4EC4-BDA2-0D1AEC60B8BD</key>
+		<dict>
+			<key>xpos</key>
+			<integer>450</integer>
+			<key>ypos</key>
+			<integer>260</integer>
+		</dict>
+		<key>84E00FF8-0609-4E6F-8CB7-D23067E11F49</key>
+		<dict>
+			<key>xpos</key>
+			<integer>450</integer>
+			<key>ypos</key>
+			<integer>120</integer>
+		</dict>
+		<key>A70A4E1E-712E-4575-967A-0AA64960904D</key>
+		<dict>
+			<key>xpos</key>
+			<integer>450</integer>
+			<key>ypos</key>
+			<integer>10</integer>
+		</dict>
+	</dict>
+	<key>webaddress</key>
+	<string>https://github.com/Jacob87/alfred-workflows</string>
+</dict>
+</plist>
