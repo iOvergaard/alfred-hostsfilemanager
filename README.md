@@ -3,6 +3,8 @@
 ## Description
 Alfred 5 workflow to see what your Mac's hosts file overrides, and why, and to change it in seconds.
 
+![The hosts keyword listing entries with their IP, comment, age and section](images/hosts-list.png)
+
 ## Installation
 
 1. Download the .alfredworkflow file from the latest release and open it to install the workflow in Alfred (requires Powerpack)
@@ -17,6 +19,8 @@ Alfred 5 workflow to see what your Mac's hosts file overrides, and why, and to c
 + To add an entry, type a hostname that isn't in the file: "hosts mysite.test My local site" adds it for 127.0.0.1 with a comment, and "hosts example.com 10.0.0.5 New server test" points it at another IP (the IP can also come first). A pasted URL is reduced to its hostname
 + Changes ask for your administrator password and flush the DNS cache. System entries such as localhost can't be changed
 + The keyword can be changed under Configure Workflow in Alfred's preferences
+
+![Adding staging.test pointing at 10.0.0.7 with the comment Staging](images/hosts-add.png)
 
 ## What it changes on your Mac
 
